@@ -158,7 +158,7 @@ What I changed after the first audit (details and scores in [docs/LIGHTHOUSE.md]
 ## Things I'd do next
 
 - A real calendar date picker where booked days are greyed out. Right now I use the native `<input type="date">` (good on mobile, accessible), but it can't disable random days in the middle, so I show an error and the list of booked dates instead.
-- Urdu / Arabic with RTL. I started looking at react-i18next but chose to finish the reviews properly instead.
+- Urdu / Arabic with RTL (react-i18next). I picked payment + reviews as my two bonuses instead.
 - PWA with offline room listings.
 
 The case study (problem, choices, the date-overlap and live price headaches) is in [docs/CASE_STUDY.md](docs/CASE_STUDY.md).
