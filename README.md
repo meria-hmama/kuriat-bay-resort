@@ -2,10 +2,8 @@
 
 My week 6 capstone for the Zenvio Solutions frontend internship. It's the frontend of a beach hotel in Skanes, near Monastir (the hotel is made up, the place isn't): guests search and book rooms, the receptionist checks people in and out, and the admin looks at charts. There is no real backend. A mock API (MSW) runs in the browser, so the live version works with fake data and you can't break anything.
 
-**Live:** https://kuriat-bay-resort.vercel.app  ← *(replace with your Vercel URL after deploying)*
+**Live version:** https://kuriat-bay-resort.vercel.app
 **Repo:** https://github.com/meria-hmama/kuriat-bay-resort
-
-![Home page](docs/screenshots/home.png)
 
 ## Try it
 
@@ -138,7 +136,7 @@ The e2e test sets `VITE_MOCK_FAIL_RATE=0`, otherwise it would fail randomly (whi
 
 ## Performance and Lighthouse
 
-What I changed after the first audit (details and scores in [docs/LIGHTHOUSE.md](docs/LIGHTHOUSE.md)):
+What I did for performance, accessibility and SEO (details in [docs/LIGHTHOUSE.md](docs/LIGHTHOUSE.md)):
 
 1. **Images**: Unsplash's CDN resizes for me (`?w=600&auto=format`), with `srcset`/`sizes`, `width`/`height` to stop layout shift, `loading="lazy"` below the fold and `fetchpriority="high"` on the hero.
 2. **Code splitting**: every page except Home is `React.lazy`, and recharts / forms / react are in their own chunks. jsPDF is only imported when you click the invoice button.
@@ -146,14 +144,7 @@ What I changed after the first audit (details and scores in [docs/LIGHTHOUSE.md]
 4. **Accessibility**: labels on every input, `aria-invalid` + `aria-describedby` on errors, skip link, visible focus rings, a focus trap in the lightbox, darker text colours for contrast, a table version of the chart data.
 5. **SEO**: title per page, meta description, `robots.txt`, `lang="en"`.
 
-![Lighthouse before and after](docs/screenshots/lighthouse-before-after.png)
-
-## Screenshots
-
-| | |
-|---|---|
-| ![Search](docs/screenshots/home.png) | ![Room](docs/screenshots/room.png) |
-| ![Checkout](docs/screenshots/checkout.png) | ![Admin dark mode](docs/screenshots/admin-dark.png) |
+**PageSpeed (mobile, 28 Oct 2026):** Performance 91 · Accessibility 100 · Best practices 100 · SEO 100 ([report](https://pagespeed.web.dev/analysis/https-kuriat-bay-resort-vercel-app/jtdw2svat1?form_factor=mobile)). Scores move a few points between runs.
 
 ## Things I'd do next
 
