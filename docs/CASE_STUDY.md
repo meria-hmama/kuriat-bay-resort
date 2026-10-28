@@ -14,7 +14,7 @@ I set it in Skanes, on the beach in front of the Kuriat islands near Monastir, b
 - **One booking box, always visible.** On the room page the booking box is sticky on desktop, and the price updates while you change dates, guests or extras. I didn't want people to find out the real price only at checkout.
 - **Errors where they happen.** Every input has its own message under it, linked with `aria-describedby`, and the submit button is disabled with a spinner while a request is running. Toasts are only for things that aren't tied to one field ("Booking cancelled", "Card declined").
 - **Native date inputs.** I hesitated a lot here. A calendar library would let me grey out booked days, but the native picker works really well on phones and is accessible without extra work. In the end I kept it, set `min` so past dates are disabled, and show a clear message plus the list of booked dates when you hit a conflict.
-- **Colours.** Teal and sand, like the sea and the beach over there. Dark mode uses the same tokens with `dark:` classes, and the charts switch their axis and tooltip colours too, because grey text on a dark tooltip was unreadable the first time.
+- **Colours.** Teal and sand, like the sea and the beach over there. Dark mode uses the same tokens with `dark:` classes, and the charts switch their axis and tooltip colours too, so the grey text stays readable on a dark tooltip.
 
 ## State management choices
 
@@ -25,13 +25,13 @@ I split state into two kinds, and that made everything simpler:
 
 The cart store is what removed the prop drilling. The room page writes the dates and extras into it and the checkout page reads them, two routes apart, without passing anything through the router.
 
-The part I'm happiest with is the room status. At first I stored `status` on each room and updated it in every handler (check-in, check-out, cancel…). I forgot one case almost immediately: cancelling today's booking left the room "Booked". So I deleted the field and wrote `deriveRoomStatus(room, bookings, today)`. The status is now always calculated from the bookings, and after any change I just invalidate the `rooms` query. Every badge in the app (home cards, front desk board, admin table) updates on its own.
+The part I'm happiest with is the room status. Storing a `status` on each room would mean updating it by hand in every action (check-in, check-out, cancel…), and it's easy to forget one case, like cancelling today's booking and leaving the room "Booked". So the room has no status field at all: `deriveRoomStatus(room, bookings, today)` calculates it from the bookings, and after any change I just invalidate the `rooms` query. Every badge in the app (home cards, front desk board, admin table) updates on its own.
 
 ## Challenges
 
 ### 1. The date overlap
 
-My first version used `<=` to compare ranges, and it said a room was taken if someone checked out on the 14th and you wanted to arrive on the 14th. That's wrong for a hotel, the room is free that afternoon. The rule is that two stays overlap only if `startA < endB && startB < endA` (strictly). I wrote tests for the edge cases: arriving the day someone leaves, a stay completely inside another, a stay completely around another.
+The easy mistake is comparing ranges with `<=`, which says a room is taken if someone checks out on the 14th and you want to arrive on the 14th. That's wrong for a hotel, the room is free that afternoon. The rule is that two stays overlap only if `startA < endB && startB < endA` (strictly). I wrote tests for the edge cases: arriving the day someone leaves, a stay completely inside another, a stay completely around another.
 
 The second problem was timezones. `new Date('2026-03-29')` is midnight UTC, which is already 1am in Tunis, and in some places it's still the day before, so counting nights with local dates can be off by one (and that weekend is also a daylight saving change in Europe). In the end I keep every date as a `'YYYY-MM-DD'` string (they compare correctly as strings!) and only turn them into UTC timestamps when I need to count nights. No more off-by-one.
 
